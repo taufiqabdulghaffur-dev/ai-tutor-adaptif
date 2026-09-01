@@ -1,241 +1,72 @@
 import streamlit as st
 
 # ============================================================
-# SALiM
-# Sains Adaptive Learning Machine
-# Prototype IPA Kelas X - Kurikulum Merdeka
+# SALiM - Sains Adaptive Learning Machine
+# Prototype Pembelajaran IPA Kelas X
 # ============================================================
 
 st.set_page_config(
-    page_title="SALiM | Sains Adaptive Learning Machine",
+    page_title="SALiM | IPA Kelas X",
     page_icon="🧬",
     layout="wide"
 )
 
 # ============================================================
-# DATA MATERI
-# ============================================================
-
-MATERIALS = {
-    "🌱 Ekosistem": {
-        "description": "Memahami hubungan antara makhluk hidup dan lingkungannya.",
-        "questions": [
-            {
-                "question": "Organisme yang mampu membuat makanan sendiri melalui fotosintesis disebut...",
-                "options": [
-                    "Konsumen",
-                    "Produsen",
-                    "Pengurai",
-                    "Detritivor"
-                ],
-                "answer": "Produsen",
-                "explanation": "Produsen adalah organisme yang mampu membuat makanan sendiri, terutama melalui fotosintesis. Contohnya adalah tumbuhan hijau."
-            },
-            {
-                "question": "Perhatikan rantai makanan berikut: Rumput → Belalang → Katak → Ular. Organisme yang memperoleh energi langsung dari rumput adalah...",
-                "options": [
-                    "Belalang",
-                    "Katak",
-                    "Ular",
-                    "Pengurai"
-                ],
-                "answer": "Belalang",
-                "explanation": "Belalang merupakan konsumen tingkat I karena memperoleh energi secara langsung dari produsen, yaitu rumput."
-            },
-            {
-                "question": "Apa fungsi utama organisme pengurai dalam ekosistem?",
-                "options": [
-                    "Menghasilkan energi matahari",
-                    "Menghasilkan makanan bagi produsen",
-                    "Menguraikan sisa organisme",
-                    "Menghentikan rantai makanan"
-                ],
-                "answer": "Menguraikan sisa organisme",
-                "explanation": "Bakteri dan jamur sebagai pengurai menguraikan sisa makhluk hidup sehingga unsur hara dapat kembali ke lingkungan."
-            }
-        ]
-    },
-
-    "🧬 Keanekaragaman Hayati": {
-        "description": "Mengenal tingkat keanekaragaman hayati dan pentingnya pelestarian.",
-        "questions": [
-            {
-                "question": "Keanekaragaman yang terjadi karena adanya variasi dalam satu spesies disebut keanekaragaman tingkat...",
-                "options": [
-                    "Gen",
-                    "Jenis",
-                    "Ekosistem",
-                    "Bioma"
-                ],
-                "answer": "Gen",
-                "explanation": "Keanekaragaman gen adalah variasi sifat yang terdapat dalam satu spesies. Contohnya adalah berbagai varietas mangga."
-            },
-            {
-                "question": "Contoh keanekaragaman hayati tingkat jenis adalah...",
-                "options": [
-                    "Mangga manalagi dan mangga golek",
-                    "Kucing dan harimau",
-                    "Hutan hujan dan savana",
-                    "Padi merah dan padi putih"
-                ],
-                "answer": "Kucing dan harimau",
-                "explanation": "Kucing dan harimau merupakan organisme dari jenis yang berbeda sehingga termasuk keanekaragaman tingkat jenis."
-            },
-            {
-                "question": "Pelestarian badak Jawa di Taman Nasional Ujung Kulon merupakan contoh konservasi...",
-                "options": [
-                    "Ex situ",
-                    "In situ",
-                    "Buatan",
-                    "Genetik"
-                ],
-                "answer": "In situ",
-                "explanation": "Konservasi in situ dilakukan dengan melestarikan organisme di habitat alaminya. Taman Nasional Ujung Kulon merupakan habitat alami badak Jawa."
-            }
-        ]
-    },
-
-    "🌍 Perubahan Lingkungan": {
-        "description": "Menganalisis penyebab, dampak, dan solusi perubahan lingkungan.",
-        "questions": [
-            {
-                "question": "Salah satu penyebab utama pencemaran udara di wilayah perkotaan adalah...",
-                "options": [
-                    "Fotosintesis tumbuhan",
-                    "Emisi kendaraan bermotor",
-                    "Penguapan air",
-                    "Pelapukan batuan"
-                ],
-                "answer": "Emisi kendaraan bermotor",
-                "explanation": "Gas buang kendaraan bermotor mengandung berbagai polutan yang dapat menurunkan kualitas udara."
-            },
-            {
-                "question": "Peningkatan konsentrasi gas rumah kaca di atmosfer dapat menyebabkan...",
-                "options": [
-                    "Pemanasan global",
-                    "Penurunan suhu bumi secara permanen",
-                    "Berkurangnya gravitasi bumi",
-                    "Berhentinya siklus air"
-                ],
-                "answer": "Pemanasan global",
-                "explanation": "Gas rumah kaca seperti karbon dioksida dan metana meningkatkan efek rumah kaca sehingga berkontribusi terhadap pemanasan global."
-            },
-            {
-                "question": "Tindakan yang paling tepat untuk mengurangi sampah plastik adalah...",
-                "options": [
-                    "Menggunakan plastik sekali pakai lebih banyak",
-                    "Membakar semua sampah plastik",
-                    "Mengurangi penggunaan plastik sekali pakai",
-                    "Membuang plastik ke sungai"
-                ],
-                "answer": "Mengurangi penggunaan plastik sekali pakai",
-                "explanation": "Mengurangi penggunaan plastik sekali pakai merupakan langkah pencegahan yang efektif untuk mengurangi timbulan sampah plastik."
-            }
-        ]
-    }
-}
-
-
-# ============================================================
-# SESSION STATE
-# ============================================================
-
-if "page" not in st.session_state:
-    st.session_state.page = "home"
-
-if "name" not in st.session_state:
-    st.session_state.name = ""
-
-if "student_code" not in st.session_state:
-    st.session_state.student_code = ""
-
-if "material" not in st.session_state:
-    st.session_state.material = "🌱 Ekosistem"
-
-if "score" not in st.session_state:
-    st.session_state.score = 0
-
-if "answers" not in st.session_state:
-    st.session_state.answers = []
-
-if "level" not in st.session_state:
-    st.session_state.level = ""
-
-if "focus" not in st.session_state:
-    st.session_state.focus = ""
-
-if "tutor_answered" not in st.session_state:
-    st.session_state.tutor_answered = False
-
-
-# ============================================================
 # STYLE
 # ============================================================
 
-st.markdown(
-    """
-    <style>
-
+st.markdown("""
+<style>
     .stApp {
-        background-color: #f5f7fb;
+        background: #f5f7fb;
     }
 
-    .main-title {
-        font-size: 44px;
-        font-weight: 800;
+    .block-container {
+        max-width: 1100px;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+
+    h1, h2, h3 {
         color: #172033;
-        margin-bottom: 5px;
-    }
-
-    .subtitle {
-        font-size: 18px;
-        color: #64748b;
-        margin-bottom: 25px;
     }
 
     .hero {
-        padding: 42px;
+        background: linear-gradient(135deg, #172033, #3730a3);
+        padding: 40px;
         border-radius: 24px;
-        background: linear-gradient(
-            135deg,
-            #172033 0%,
-            #26334d 55%,
-            #4338ca 100%
-        );
         color: white;
         margin-bottom: 30px;
     }
 
-    .hero-label {
-        font-size: 13px;
+    .hero-small {
+        font-size: 14px;
         font-weight: 700;
-        letter-spacing: 1.5px;
+        letter-spacing: 1px;
         color: #c7d2fe;
-        text-transform: uppercase;
     }
 
     .hero-title {
-        font-size: 46px;
+        font-size: 48px;
         font-weight: 800;
         margin-top: 8px;
     }
 
-    .hero-name {
+    .hero-subtitle {
         font-size: 20px;
         font-weight: 600;
         color: #e0e7ff;
     }
 
-    .hero-text {
+    .hero-description {
         font-size: 16px;
-        line-height: 1.7;
         color: #cbd5e1;
-        max-width: 760px;
+        line-height: 1.7;
         margin-top: 12px;
     }
 
     .card {
-        background-color: white;
+        background: white;
         padding: 25px;
         border-radius: 18px;
         border: 1px solid #e2e8f0;
@@ -246,7 +77,6 @@ st.markdown(
         font-size: 20px;
         font-weight: 700;
         color: #172033;
-        margin-bottom: 8px;
     }
 
     .card-text {
@@ -254,465 +84,510 @@ st.markdown(
         line-height: 1.6;
     }
 
-    .material {
-        background-color: white;
-        padding: 24px;
+    .question-box {
+        background: white;
+        padding: 25px;
         border-radius: 18px;
         border: 1px solid #e2e8f0;
-        min-height: 170px;
-    }
-
-    .material-icon {
-        font-size: 32px;
-    }
-
-    .material-title {
-        font-size: 19px;
-        font-weight: 700;
-        color: #172033;
-        margin-top: 8px;
-    }
-
-    .material-text {
-        color: #64748b;
-        font-size: 14px;
-        line-height: 1.5;
-        margin-top: 8px;
-    }
-
-    .question {
-        background-color: white;
-        padding: 28px;
-        border-radius: 18px;
-        border: 1px solid #e2e8f0;
-        margin-top: 20px;
+        margin-top: 15px;
         margin-bottom: 10px;
     }
 
-    .question-label {
+    .question-number {
         color: #4f46e5;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 800;
         letter-spacing: 1px;
-        text-transform: uppercase;
     }
 
     .question-text {
         color: #172033;
-        font-size: 20px;
+        font-size: 19px;
         font-weight: 700;
         line-height: 1.6;
         margin-top: 8px;
     }
 
-    .ai {
-        background-color: #eef2ff;
-        padding: 28px;
-        border-radius: 20px;
-        border: 1px solid #c7d2fe;
-        margin: 20px 0;
-    }
-
-    .ai-label {
-        color: #4f46e5;
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-    }
-
-    .ai-title {
-        color: #1e1b4b;
-        font-size: 20px;
-        font-weight: 700;
-        margin-top: 8px;
-        line-height: 1.6;
-    }
-
-    .score {
-        background-color: white;
+    .result-box {
+        background: white;
         padding: 35px;
         border-radius: 22px;
         border: 1px solid #e2e8f0;
         text-align: center;
-        margin-bottom: 25px;
+        margin: 20px 0;
     }
 
-    .score-number {
-        font-size: 58px;
+    .score {
+        font-size: 55px;
         font-weight: 800;
         color: #4f46e5;
     }
 
-    .score-label {
+    .footer {
+        text-align: center;
         color: #64748b;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
     }
+</style>
+""", unsafe_allow_html=True)
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+
+# ============================================================
+# DATA MATERI
+# ============================================================
+
+MATERI = {
+    "🌱 Ekosistem": {
+        "deskripsi": "Mempelajari hubungan antara makhluk hidup dan lingkungannya.",
+        "soal": [
+            {
+                "tanya": "Organisme yang mampu membuat makanan sendiri melalui fotosintesis disebut...",
+                "pilihan": [
+                    "Konsumen",
+                    "Produsen",
+                    "Pengurai",
+                    "Detritivor"
+                ],
+                "jawaban": "Produsen",
+                "bahas": "Produsen adalah organisme yang mampu membuat makanan sendiri, terutama melalui fotosintesis. Contohnya adalah tumbuhan hijau."
+            },
+            {
+                "tanya": "Pada rantai makanan Rumput → Belalang → Katak → Ular, organisme yang memperoleh energi langsung dari rumput adalah...",
+                "pilihan": [
+                    "Rumput",
+                    "Belalang",
+                    "Katak",
+                    "Ular"
+                ],
+                "jawaban": "Belalang",
+                "bahas": "Belalang merupakan konsumen tingkat pertama karena mendapatkan energi langsung dari produsen, yaitu rumput."
+            },
+            {
+                "tanya": "Apa fungsi utama organisme pengurai dalam ekosistem?",
+                "pilihan": [
+                    "Menghasilkan energi matahari",
+                    "Menghasilkan oksigen",
+                    "Menguraikan sisa organisme",
+                    "Menghentikan rantai makanan"
+                ],
+                "jawaban": "Menguraikan sisa organisme",
+                "bahas": "Pengurai seperti bakteri dan jamur menguraikan sisa makhluk hidup sehingga unsur hara dapat kembali ke lingkungan."
+            }
+        ]
+    },
+
+    "🧬 Keanekaragaman Hayati": {
+        "deskripsi": "Mengenal tingkat keanekaragaman hayati dan pentingnya pelestarian.",
+        "soal": [
+            {
+                "tanya": "Keanekaragaman yang terjadi karena adanya variasi dalam satu spesies disebut keanekaragaman tingkat...",
+                "pilihan": [
+                    "Gen",
+                    "Jenis",
+                    "Ekosistem",
+                    "Bioma"
+                ],
+                "jawaban": "Gen",
+                "bahas": "Keanekaragaman gen adalah variasi sifat yang terdapat dalam satu spesies. Contohnya berbagai varietas mangga."
+            },
+            {
+                "tanya": "Contoh keanekaragaman hayati tingkat jenis adalah...",
+                "pilihan": [
+                    "Mangga manalagi dan mangga golek",
+                    "Kucing dan harimau",
+                    "Padi merah dan padi putih",
+                    "Kelapa hijau dan kelapa gading"
+                ],
+                "jawaban": "Kucing dan harimau",
+                "bahas": "Kucing dan harimau merupakan organisme dari jenis yang berbeda sehingga termasuk keanekaragaman tingkat jenis."
+            },
+            {
+                "tanya": "Pelestarian badak Jawa di Taman Nasional Ujung Kulon merupakan contoh konservasi...",
+                "pilihan": [
+                    "Ex situ",
+                    "In situ",
+                    "Buatan",
+                    "Laboratorium"
+                ],
+                "jawaban": "In situ",
+                "bahas": "Konservasi in situ dilakukan dengan melestarikan organisme di habitat alaminya."
+            }
+        ]
+    },
+
+    "🌍 Perubahan Lingkungan": {
+        "deskripsi": "Menganalisis penyebab, dampak, dan solusi perubahan lingkungan.",
+        "soal": [
+            {
+                "tanya": "Salah satu penyebab utama pencemaran udara di wilayah perkotaan adalah...",
+                "pilihan": [
+                    "Fotosintesis tumbuhan",
+                    "Emisi kendaraan bermotor",
+                    "Penguapan air",
+                    "Pelapukan batuan"
+                ],
+                "jawaban": "Emisi kendaraan bermotor",
+                "bahas": "Gas buang kendaraan bermotor mengandung berbagai polutan yang dapat menurunkan kualitas udara."
+            },
+            {
+                "tanya": "Peningkatan konsentrasi gas rumah kaca di atmosfer dapat menyebabkan...",
+                "pilihan": [
+                    "Pemanasan global",
+                    "Berkurangnya gravitasi bumi",
+                    "Berhentinya siklus air",
+                    "Hilangnya seluruh oksigen"
+                ],
+                "jawaban": "Pemanasan global",
+                "bahas": "Peningkatan gas rumah kaca memperkuat efek rumah kaca dan berkontribusi terhadap pemanasan global."
+            },
+            {
+                "tanya": "Tindakan yang paling tepat untuk mengurangi sampah plastik adalah...",
+                "pilihan": [
+                    "Menggunakan plastik sekali pakai lebih banyak",
+                    "Membakar semua plastik",
+                    "Mengurangi penggunaan plastik sekali pakai",
+                    "Membuang plastik ke sungai"
+                ],
+                "jawaban": "Mengurangi penggunaan plastik sekali pakai",
+                "bahas": "Mengurangi penggunaan plastik sekali pakai merupakan salah satu langkah paling efektif untuk mengurangi timbulan sampah plastik."
+            }
+        ]
+    }
+}
+
+
+# ============================================================
+# SESSION STATE
+# ============================================================
+
+if "halaman" not in st.session_state:
+    st.session_state.halaman = "home"
+
+if "nama" not in st.session_state:
+    st.session_state.nama = ""
+
+if "kode" not in st.session_state:
+    st.session_state.kode = ""
+
+if "materi" not in st.session_state:
+    st.session_state.materi = "🌱 Ekosistem"
+
+if "hasil" not in st.session_state:
+    st.session_state.hasil = []
+
+if "skor" not in st.session_state:
+    st.session_state.skor = 0
+
+if "level" not in st.session_state:
+    st.session_state.level = ""
+
+if "jawaban_tutor" not in st.session_state:
+    st.session_state.jawaban_tutor = ""
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-def show_footer():
-    st.divider()
-
-    st.caption(
-        "SALiM • Sains Adaptive Learning Machine • "
-        "Developed by Tabdulghaffur © 2026"
-    )
-
-
-# ============================================================
-# HOME
-# ============================================================
-
-if st.session_state.page == "home":
-
+def footer():
     st.markdown(
-        """
-        <div class="hero">
-
-            <div class="hero-label">
-                IPA Kelas X • Kurikulum Merdeka
-            </div>
-
-            <div class="hero-title">
-                🧬 SALiM
-            </div>
-
-            <div class="hero-name">
-                Sains Adaptive Learning Machine
-            </div>
-
-            <div class="hero-text">
-                Sistem pembelajaran adaptif berbasis kecerdasan
-                buatan yang membantu siswa belajar sesuai
-                tingkat pemahaman dan kebutuhan belajarnya.
-            </div>
-
-        </div>
-        """,
+        '<div class="footer">SALiM • Sains Adaptive Learning Machine<br>'
+        'Developed by Tabdulghaffur © 2026</div>',
         unsafe_allow_html=True
     )
 
-    st.markdown("## 🚀 Mulai Pembelajaran")
 
-    col1, col2 = st.columns(2)
+# ============================================================
+# HALAMAN HOME
+# ============================================================
 
-    with col1:
+if st.session_state.halaman == "home":
 
-        st.markdown(
-            """
-            <div class="card">
+    st.markdown(
+        '<div class="hero">'
+        '<div class="hero-small">IPA KELAS X • KURIKULUM MERDEKA</div>'
+        '<div class="hero-title">🧬 SALiM</div>'
+        '<div class="hero-subtitle">Sains Adaptive Learning Machine</div>'
+        '<div class="hero-description">'
+        'Sistem pembelajaran adaptif yang membantu siswa '
+        'belajar IPA sesuai tingkat pemahaman, kebutuhan, '
+        'dan perkembangan belajarnya.'
+        '</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
-                <div class="card-title">
-                    👤 Identitas Siswa
-                </div>
+    st.header("🚀 Mulai Pembelajaran")
 
-                <div class="card-text">
-                    Masukkan identitas sebelum memulai
-                    pembelajaran.
-                </div>
+    kiri, kanan = st.columns(2)
 
-            </div>
-            """,
-            unsafe_allow_html=True
+    with kiri:
+
+        st.subheader("👤 Identitas Siswa")
+
+        st.write(
+            "Masukkan identitas sebelum memulai pembelajaran."
         )
 
-        name = st.text_input(
+        nama = st.text_input(
             "Nama siswa",
             placeholder="Contoh: Ahmad"
         )
 
-        student_code = st.text_input(
+        kode = st.text_input(
             "Kode siswa",
             placeholder="Contoh: S001"
         )
 
-    with col2:
+    with kanan:
 
-        st.markdown(
-            """
-            <div class="card">
+        st.subheader("📚 Pilih Materi")
 
-                <div class="card-title">
-                    📚 Pilih Materi
-                </div>
-
-                <div class="card-text">
-                    Pilih salah satu materi IPA Kelas X
-                    untuk memulai tes diagnostik.
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
+        st.write(
+            "Pilih materi IPA Kelas X yang akan dipelajari."
         )
 
-        material = st.selectbox(
-            "Materi IPA",
-            list(MATERIALS.keys())
+        materi = st.selectbox(
+            "Materi",
+            list(MATERI.keys())
         )
+
+        st.write("")
 
         if st.button(
             "🚀 Mulai Pembelajaran",
+            type="primary",
             use_container_width=True
         ):
 
-            if name.strip() == "":
-                st.warning(
-                    "Silakan masukkan nama siswa."
-                )
+            if not nama.strip():
+                st.warning("Silakan masukkan nama siswa.")
 
-            elif student_code.strip() == "":
-                st.warning(
-                    "Silakan masukkan kode siswa."
-                )
+            elif not kode.strip():
+                st.warning("Silakan masukkan kode siswa.")
 
             else:
 
-                st.session_state.name = name.strip()
-
-                st.session_state.student_code = (
-                    student_code.strip().upper()
-                )
-
-                st.session_state.material = material
-
-                st.session_state.page = "diagnostic"
+                st.session_state.nama = nama.strip()
+                st.session_state.kode = kode.strip().upper()
+                st.session_state.materi = materi
+                st.session_state.halaman = "diagnostik"
 
                 st.rerun()
 
-    st.markdown("## 🔬 Materi IPA Kelas X")
+    st.divider()
 
-    columns = st.columns(3)
+    st.header("🔬 Materi IPA Kelas X")
 
-    for column, (material_name, data) in zip(
-        columns,
-        MATERIALS.items()
-    ):
+    kolom = st.columns(3)
 
-        with column:
+    for i, (nama_materi, data) in enumerate(MATERI.items()):
 
-            icon = material_name[:2]
-            title = material_name[2:]
+        with kolom[i]:
 
             st.markdown(
-                f"""
-                <div class="material">
-
-                    <div class="material-icon">
-                        {icon}
-                    </div>
-
-                    <div class="material-title">
-                        {title}
-                    </div>
-
-                    <div class="material-text">
-                        {data["description"]}
-                    </div>
-
-                </div>
-                """,
+                '<div class="card">',
                 unsafe_allow_html=True
             )
 
-    show_footer()
+            st.subheader(nama_materi)
+
+            st.write(data["deskripsi"])
+
+            st.markdown(
+                '</div>',
+                unsafe_allow_html=True
+            )
+
+    footer()
 
 
 # ============================================================
-# DIAGNOSTIC
+# TES DIAGNOSTIK
 # ============================================================
 
-elif st.session_state.page == "diagnostic":
-
-    material = st.session_state.material
-
-    questions = MATERIALS[material]["questions"]
+elif st.session_state.halaman == "diagnostik":
 
     st.title("🧠 Tes Diagnostik")
 
-    st.caption(
-        f"Siswa: {st.session_state.name}  •  "
-        f"Materi: {material}"
+    st.write(
+        f"**Siswa:** {st.session_state.nama}"
+    )
+
+    st.write(
+        f"**Kode:** {st.session_state.kode}"
+    )
+
+    st.write(
+        f"**Materi:** {st.session_state.materi}"
     )
 
     st.progress(0.33)
 
-    st.markdown(
-        """
-        <div class="card">
-
-            <div class="card-title">
-                🎯 Tujuan Tes
-            </div>
-
-            <div class="card-text">
-                Tes ini digunakan untuk mengetahui
-                pemahaman awalmu. Hasilnya akan digunakan
-                SALiM untuk menentukan fokus pembelajaran.
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.info(
+        "Jawablah ketiga pertanyaan berikut. "
+        "Hasil tes digunakan SALiM untuk menentukan "
+        "fokus pembelajaran."
     )
 
-    selected_answers = []
+    soal = MATERI[
+        st.session_state.materi
+    ]["soal"]
 
-    for index, question in enumerate(questions):
+    jawaban_siswa = []
+
+    for i, q in enumerate(soal):
 
         st.markdown(
-            f"""
-            <div class="question">
-
-                <div class="question-label">
-                    Pertanyaan {index + 1} dari 3
-                </div>
-
-                <div class="question-text">
-                    {question["question"]}
-                </div>
-
-            </div>
-            """,
+            '<div class="question-box">',
             unsafe_allow_html=True
         )
 
-        selected = st.radio(
-            "Pilih jawaban:",
-            question["options"],
-            key=f"answer_{index}"
+        st.markdown(
+            f'<div class="question-number">'
+            f'PERTANYAAN {i + 1} DARI 3'
+            f'</div>',
+            unsafe_allow_html=True
         )
 
-        selected_answers.append(selected)
+        st.markdown(
+            f'<div class="question-text">'
+            f'{q["tanya"]}'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        pilihan = st.radio(
+            "Pilih jawaban:",
+            q["pilihan"],
+            key=f"soal_{i}"
+        )
+
+        jawaban_siswa.append(pilihan)
 
     st.write("")
 
     if st.button(
         "📊 Periksa Jawaban",
+        type="primary",
         use_container_width=True
     ):
 
-        score = 0
-        results = []
+        skor = 0
+        hasil = []
 
-        for index, question in enumerate(questions):
+        for i, q in enumerate(soal):
 
-            selected = selected_answers[index]
-
-            correct = (
-                selected == question["answer"]
+            benar = (
+                jawaban_siswa[i] == q["jawaban"]
             )
 
-            if correct:
-                score += 1
+            if benar:
+                skor += 1
 
-            results.append(
+            hasil.append(
                 {
-                    "selected": selected,
-                    "correct": correct,
-                    "answer": question["answer"],
-                    "explanation": question["explanation"]
+                    "nomor": i + 1,
+                    "jawaban": jawaban_siswa[i],
+                    "benar": benar,
+                    "kunci": q["jawaban"],
+                    "bahasan": q["bahas"]
                 }
             )
 
-        st.session_state.score = score
-        st.session_state.answers = results
+        st.session_state.skor = skor
+        st.session_state.hasil = hasil
 
-        percentage = int(
-            (score / 3) * 100
-        )
+        nilai = (skor / 3) * 100
 
-        if percentage < 50:
-
+        if nilai < 50:
             st.session_state.level = "Pemula"
 
-            st.session_state.focus = (
-                "Memperkuat konsep dasar "
-                + material[2:]
-            )
-
-        elif percentage < 80:
-
+        elif nilai < 80:
             st.session_state.level = "Menengah"
 
-            st.session_state.focus = (
-                "Memperkuat hubungan antar konsep "
-                "dan penerapannya"
-            )
-
         else:
-
             st.session_state.level = "Mahir"
 
-            st.session_state.focus = (
-                "Penerapan konsep dalam situasi nyata "
-                "dan soal tingkat tinggi"
-            )
-
-        st.session_state.page = "feedback"
+        st.session_state.halaman = "hasil"
 
         st.rerun()
 
-    show_footer()
+    footer()
 
 
 # ============================================================
-# FEEDBACK
+# HASIL TES
 # ============================================================
 
-elif st.session_state.page == "feedback":
+elif st.session_state.halaman == "hasil":
 
-    st.title("📝 Hasil Tes Diagnostik")
+    st.title("📊 Hasil Tes Diagnostik")
 
-    score = st.session_state.score
-
-    percentage = int(
-        (score / 3) * 100
+    nilai = int(
+        (st.session_state.skor / 3) * 100
     )
 
     st.markdown(
-        f"""
-        <div class="score">
-
-            <div class="score-number">
-                {percentage}%
-            </div>
-
-            <div class="score-label">
-                Skor Diagnostik
-            </div>
-
-        </div>
-        """,
+        '<div class="result-box">',
         unsafe_allow_html=True
     )
 
-    st.write(
-        f"**{st.session_state.name}**, berikut hasil "
-        "jawabanmu:"
+    st.markdown(
+        f'<div class="score">{nilai}</div>',
+        unsafe_allow_html=True
     )
 
-    for index, result in enumerate(
-        st.session_state.answers
-    ):
+    st.write("Nilai diagnostik")
+
+    st.markdown(
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Jawaban Benar",
+            f"{st.session_state.skor}/3"
+        )
+
+    with col2:
+        st.metric(
+            "Nilai",
+            f"{nilai}"
+        )
+
+    with col3:
+        st.metric(
+            "Level",
+            st.session_state.level
+        )
+
+    st.divider()
+
+    st.subheader("📝 Pembahasan Jawaban")
+
+    for hasil in st.session_state.hasil:
 
         st.markdown(
-            f"### Pertanyaan {index + 1}"
+            f"### Pertanyaan {hasil['nomor']}"
         )
 
         st.write(
-            f"**Jawabanmu:** {result['selected']}"
+            f"**Jawaban siswa:** "
+            f"{hasil['jawaban']}"
         )
 
-        if result["correct"]:
+        if hasil["benar"]:
 
             st.success(
                 "✅ Jawaban benar!"
@@ -721,14 +596,14 @@ elif st.session_state.page == "feedback":
         else:
 
             st.error(
-                f"❌ Jawaban kurang tepat. "
+                f"❌ Jawaban belum tepat. "
                 f"Jawaban yang benar: "
-                f"{result['answer']}"
+                f"{hasil['kunci']}"
             )
 
         st.info(
             f"💡 **Pembahasan:** "
-            f"{result['explanation']}"
+            f"{hasil['bahasan']}"
         )
 
     st.divider()
@@ -738,125 +613,115 @@ elif st.session_state.page == "feedback":
     if st.session_state.level == "Pemula":
 
         st.warning(
-            "Pemahaman dasar masih perlu diperkuat."
+            "Pemahaman konsep dasar masih perlu diperkuat."
+        )
+
+        fokus = (
+            "Memahami konsep dasar dan istilah penting "
+            "dalam materi."
         )
 
     elif st.session_state.level == "Menengah":
 
         st.info(
             "Pemahaman dasar sudah cukup baik, "
-            "tetapi beberapa konsep perlu diperdalam."
+            "tetapi masih perlu pendalaman."
+        )
+
+        fokus = (
+            "Menghubungkan beberapa konsep dan "
+            "menerapkannya dalam situasi sederhana."
         )
 
     else:
 
         st.success(
-            "Pemahaman awal sudah baik. "
-            "Siswa dapat diarahkan pada penerapan konsep."
+            "Pemahaman awal sangat baik."
         )
 
-    st.markdown("### 🎯 Fokus Pembelajaran")
+        fokus = (
+            "Menerapkan konsep pada permasalahan "
+            "dan situasi kehidupan nyata."
+        )
 
-    st.info(
-        st.session_state.focus
-    )
+    st.subheader("🎯 Rekomendasi Pembelajaran")
+
+    st.write(fokus)
 
     if st.button(
         "🤖 Lanjut ke SALiM AI Tutor",
+        type="primary",
         use_container_width=True
     ):
 
-        st.session_state.page = "tutor"
+        st.session_state.halaman = "tutor"
 
         st.rerun()
 
-    show_footer()
+    footer()
 
 
 # ============================================================
 # AI TUTOR
 # ============================================================
 
-elif st.session_state.page == "tutor":
+elif st.session_state.halaman == "tutor":
 
     st.title("🤖 SALiM AI Tutor")
 
     st.caption(
-        f"{st.session_state.material} • "
-        f"Level: {st.session_state.level}"
+        f"{st.session_state.materi} • "
+        f"Level awal: {st.session_state.level}"
     )
-
-    st.markdown(
-        """
-        <div class="ai">
-
-            <div class="ai-label">
-                Adaptive Learning
-            </div>
-
-            <div class="ai-title">
-                Halo! Saya SALiM.
-            </div>
-
-            <p>
-                Saya sudah melihat hasil tes diagnostikmu.
-                Sekarang kita akan belajar berdasarkan
-                konsep yang masih perlu diperkuat.
-            </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown("### 🎯 Fokus Belajarmu")
 
     st.info(
-        st.session_state.focus
+        "SALiM menyesuaikan pembelajaran berdasarkan "
+        "hasil tes diagnostikmu."
     )
 
-    st.markdown("### 💬 Pertanyaan SALiM")
+    st.subheader("🎯 Fokus Pembelajaran")
 
-    st.markdown(
-        """
-        <div class="card">
+    if st.session_state.level == "Pemula":
 
-            <div class="card-title">
-                🤖 SALiM bertanya:
-            </div>
+        st.write(
+            "Kita akan memperkuat konsep dasar terlebih dahulu."
+        )
 
-            <p>
-                Bayangkan terjadi perubahan besar pada
-                lingkungan di sekitarmu.
-                Menurutmu, bagaimana perubahan tersebut
-                dapat memengaruhi makhluk hidup yang ada
-                di dalamnya?
-            </p>
+    elif st.session_state.level == "Menengah":
 
-            <p style="color:#64748b;">
-                Jelaskan dengan bahasamu sendiri.
-                Tidak perlu takut salah.
-            </p>
+        st.write(
+            "Kita akan memperdalam hubungan antar konsep."
+        )
 
-        </div>
-        """,
-        unsafe_allow_html=True
+    else:
+
+        st.write(
+            "Kita akan mengembangkan kemampuan penerapan "
+            "dan berpikir kritis."
+        )
+
+    st.divider()
+
+    st.subheader("💬 Pertanyaan dari SALiM")
+
+    st.write(
+        "Menurutmu, mengapa keseimbangan dalam suatu "
+        "ekosistem penting bagi kehidupan makhluk hidup?"
     )
 
-    tutor_answer = st.text_area(
-        "Jawabanmu",
-        placeholder=(
-            "Tuliskan pendapatmu di sini..."
-        ),
+    jawaban = st.text_area(
+        "Tuliskan jawabanmu:",
+        placeholder="Tulis jawaban dengan bahasamu sendiri...",
         height=150
     )
 
     if st.button(
         "💬 Kirim Jawaban",
+        type="primary",
         use_container_width=True
     ):
 
-        if tutor_answer.strip() == "":
+        if not jawaban.strip():
 
             st.warning(
                 "Silakan tuliskan jawaban terlebih dahulu."
@@ -864,164 +729,121 @@ elif st.session_state.page == "tutor":
 
         else:
 
-            st.session_state.tutor_answered = True
+            st.session_state.jawaban_tutor = jawaban
 
             st.success(
-                "Jawaban berhasil dikirim."
+                "Jawaban berhasil dikirim ke SALiM."
             )
 
-    if st.session_state.tutor_answered:
+            st.subheader("🤖 Umpan Balik SALiM")
 
-        st.markdown(
-            """
-            <div class="ai">
+            st.write(
+                "Bagus! Kamu sudah mencoba menghubungkan "
+                "keseimbangan ekosistem dengan kehidupan "
+                "makhluk hidup."
+            )
 
-                <div class="ai-label">
-                    🤖 SALiM memberikan umpan balik
-                </div>
-
-                <div class="ai-title">
-                    Bagus! Kamu sudah mulai
-                    menghubungkan perubahan lingkungan
-                    dengan kehidupan organisme.
-                </div>
-
-                <p>
-                    Sekarang coba berpikir lebih mendalam.
-                    Jika jumlah produsen dalam suatu
-                    ekosistem berkurang secara drastis,
-                    apa yang mungkin terjadi pada konsumen
-                    tingkat pertama? Jelaskan alasannya.
-                </p>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+            st.info(
+                "Coba pikirkan lebih lanjut: apa yang terjadi "
+                "jika salah satu populasi dalam rantai makanan "
+                "menurun secara drastis?"
+            )
 
     st.divider()
 
     if st.button(
-        "🎯 Selesaikan Pembelajaran",
+        "🏁 Selesaikan Pembelajaran",
         use_container_width=True
     ):
 
-        st.session_state.page = "result"
+        st.session_state.halaman = "selesai"
 
         st.rerun()
 
-    show_footer()
+    footer()
 
 
 # ============================================================
-# RESULT
+# SELESAI
 # ============================================================
 
-elif st.session_state.page == "result":
+elif st.session_state.halaman == "selesai":
 
     st.markdown(
-        """
-        <div class="hero">
-
-            <div class="hero-label">
-                Learning Journey Completed
-            </div>
-
-            <div class="hero-title">
-                🎉 Pembelajaran Selesai
-            </div>
-
-            <div class="hero-text">
-                Kamu telah menyelesaikan sesi pembelajaran
-                bersama SALiM.
-            </div>
-
-        </div>
-        """,
+        '<div class="hero">',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        f"## 👋 {st.session_state.name}"
+        '<div class="hero-small">'
+        'LEARNING JOURNEY COMPLETED'
+        '</div>',
+        unsafe_allow_html=True
     )
 
-    st.write(
-        f"Materi yang dipelajari: "
-        f"**{st.session_state.material}**"
+    st.markdown(
+        '<div class="hero-title">'
+        '🎉 Pembelajaran Selesai'
+        '</div>',
+        unsafe_allow_html=True
     )
 
-    percentage = int(
-        (st.session_state.score / 3) * 100
+    st.markdown(
+        '<div class="hero-description">'
+        'Terima kasih telah belajar bersama SALiM.'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    st.subheader(
+        f"👋 Sampai jumpa, {st.session_state.nama}!"
     )
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-
         st.metric(
-            "Pre-test",
-            f"{percentage}%"
+            "Nilai Diagnostik",
+            f"{int((st.session_state.skor / 3) * 100)}"
         )
 
     with col2:
-
         st.metric(
-            "Level Awal",
+            "Level",
             st.session_state.level
         )
 
     with col3:
-
         st.metric(
-            "Fokus Belajar",
-            "Adaptif"
+            "Materi",
+            st.session_state.materi.split(" ", 1)[1]
         )
 
-    st.write("")
-
-    st.markdown(
-        """
-        <div class="card">
-
-            <div class="card-title">
-                🎯 Ringkasan Pembelajaran
-            </div>
-
-            <p>
-                SALiM menganalisis hasil tes diagnostik
-                kemudian menentukan fokus pembelajaran
-                berdasarkan kemampuan awal siswa.
-            </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.success(
+        "🟢 Sesi pembelajaran SALiM telah selesai."
     )
 
     st.info(
-        f"Rekomendasi SALiM: "
-        f"{st.session_state.focus}"
-    )
-
-    st.success(
-        "🟢 Sesi pembelajaran telah selesai."
-    )
-
-    st.warning(
-        "Prototype ini masih menggunakan simulasi AI. "
-        "Pada tahap berikutnya, SALiM dapat dihubungkan "
-        "dengan model AI sungguhan dan database siswa."
+        "Prototype berikutnya dapat dikembangkan dengan "
+        "AI sungguhan, database hasil belajar, pre-test, "
+        "post-test, dan dashboard guru."
     )
 
     if st.button(
-        "🔄 Mulai Pembelajaran Baru",
+        "🔄 Kembali ke Halaman Awal",
+        type="primary",
         use_container_width=True
     ):
 
         st.session_state.clear()
 
-        st.session_state.page = "home"
+        st.session_state.halaman = "home"
 
         st.rerun()
 
-    show_footer()
+    footer()
