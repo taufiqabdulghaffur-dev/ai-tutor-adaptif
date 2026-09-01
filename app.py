@@ -19,7 +19,8 @@ supabase = create_client(
     SUPABASE_URL,
     SUPABASE_KEY
 )
-
+st.write("Supabase URL:", SUPABASE_URL)
+st.write("Key type:", SUPABASE_KEY[:15])
 # =========================
 # TAMPILAN
 # =========================
