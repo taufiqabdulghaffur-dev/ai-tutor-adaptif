@@ -93,3 +93,18 @@ if st.button("🔍 Tes Koneksi Database"):
         st.write(response.data)
     except Exception as e:
         st.error(f"❌ Tes gagal: {e}")
+
+if st.button("🧪 Tes INSERT Database"):
+    try:
+        test_data = {
+            "name": "RLS_TEST",
+            "student_code": "TEST001"
+        }
+
+        response = supabase.table("students").insert(test_data).execute()
+
+        st.success("✅ INSERT berhasil!")
+        st.write(response.data)
+
+    except Exception as e:
+        st.error(f"❌ INSERT gagal: {e}")
