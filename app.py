@@ -19,8 +19,25 @@ supabase = create_client(
     SUPABASE_URL,
     SUPABASE_KEY
 )
-st.write("Supabase URL:", SUPABASE_URL)
-st.write("Key type:", SUPABASE_KEY[:15])
+import base64
+import json
+
+token_parts = SUPABASE_KEY.split(".")
+
+if len(token_parts) == 3:
+    payload = token_parts[1]
+    payload += "=" * (-len(payload) % 4)
+
+    claims = json.loads(
+        base64.urlsafe_b64decode(payload)
+    )
+
+    st.write("JWT role:", claims.get("role"))
+    st.write("JWT ref:", claims.get("ref"))
+else:
+    st.write("Key bukan JWT")
+
+
 # =========================
 # TAMPILAN
 # =========================
