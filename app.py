@@ -83,3 +83,13 @@ if st.button("💾 Simpan Data Siswa"):
             st.error(
                 f"Terjadi kesalahan: {e}"
             )
+
+st.divider()
+
+if st.button("🔍 Tes Koneksi Database"):
+    try:
+        response = supabase.table("students").select("*").limit(1).execute()
+        st.success("✅ Koneksi Data API berhasil!")
+        st.write(response.data)
+    except Exception as e:
+        st.error(f"❌ Tes gagal: {e}")
