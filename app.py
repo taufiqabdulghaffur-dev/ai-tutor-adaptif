@@ -1,64 +1,269 @@
 import streamlit as st
 
 # =========================================================
-# KONFIGURASI
+# CONFIGURATION
 # =========================================================
 
 st.set_page_config(
-    page_title="AI Tutor Adaptif",
-    page_icon="🧠",
-    layout="centered"
+    page_title="NEXA • AI Learning",
+    page_icon="🧬",
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 # =========================================================
 # SESSION STATE
 # =========================================================
 
-if "page" not in st.session_state:
-    st.session_state.page = "home"
+defaults = {
+    "page": "home",
+    "name": "",
+    "student_code": "",
+    "material": "Ekosistem",
+    "score": 0,
+    "level": "",
+    "focus": "",
+    "q1": None,
+    "q2": None,
+    "q3": None,
+    "tutor_started": False,
+    "post_test": False,
+}
 
-if "name" not in st.session_state:
-    st.session_state.name = ""
+for key, value in defaults.items():
+    if key not in st.session_state:
+        st.session_state[key] = value
 
-if "score" not in st.session_state:
-    st.session_state.score = 0
-
-if "answers" not in st.session_state:
-    st.session_state.answers = {}
 
 # =========================================================
-# CSS
+# CUSTOM CSS
 # =========================================================
 
 st.markdown("""
 <style>
-    .main-title {
-        text-align: center;
-        font-size: 38px;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
 
-    .subtitle {
-        text-align: center;
-        color: #666;
-        font-size: 17px;
-        margin-bottom: 30px;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-    .card {
-        padding: 25px;
-        border-radius: 15px;
-        border: 1px solid #ddd;
-        margin-bottom: 20px;
-    }
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+}
 
-    .result {
-        padding: 20px;
-        border-radius: 15px;
-        background-color: #f5f5f5;
-        margin: 15px 0;
-    }
+.stApp {
+    background:
+        radial-gradient(circle at 10% 10%, rgba(99,102,241,0.10), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(16,185,129,0.10), transparent 30%),
+        #f8fafc;
+}
+
+/* Hide Streamlit branding */
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+header {
+    visibility: hidden;
+}
+
+/* Main container */
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+    max-width: 1180px;
+}
+
+/* Hero */
+.hero {
+    padding: 55px 50px;
+    border-radius: 28px;
+    background: linear-gradient(
+        135deg,
+        #111827 0%,
+        #1e293b 50%,
+        #312e81 100%
+    );
+    color: white;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 50px rgba(15,23,42,0.15);
+}
+
+.hero-small {
+    color: #cbd5e1;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.hero-title {
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.hero-desc {
+    color: #cbd5e1;
+    font-size: 17px;
+    line-height: 1.7;
+    max-width: 720px;
+}
+
+/* Cards */
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 25px rgba(15,23,42,0.05);
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.card-desc {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* Material cards */
+.material-card {
+    background: white;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    height: 190px;
+    box-shadow: 0 8px 25px rgba(15,23,42,0.05);
+}
+
+.material-icon {
+    font-size: 34px;
+    margin-bottom: 10px;
+}
+
+.material-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.material-text {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Stats */
+.stat {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 30px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* Question */
+.question-box {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+}
+
+.question-number {
+    color: #6366f1;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.question-text {
+    font-size: 21px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+/* AI tutor */
+.ai-box {
+    background: linear-gradient(
+        135deg,
+        #eef2ff,
+        #ecfeff
+    );
+    border: 1px solid #c7d2fe;
+    border-radius: 22px;
+    padding: 28px;
+    margin-bottom: 20px;
+}
+
+.ai-label {
+    color: #4f46e5;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.ai-question {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e1b4b;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+/* Result */
+.result-box {
+    background: white;
+    border-radius: 25px;
+    padding: 35px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 12px 40px rgba(15,23,42,0.07);
+    text-align: center;
+}
+
+.big-score {
+    font-size: 60px;
+    font-weight: 800;
+    color: #4f46e5;
+}
+
+.small-muted {
+    color: #64748b;
+}
+
+/* Buttons */
+.stButton > button {
+    border-radius: 12px;
+    min-height: 46px;
+    font-weight: 700;
+    border: none;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -69,45 +274,159 @@ st.markdown("""
 
 if st.session_state.page == "home":
 
-    st.markdown(
-        '<div class="main-title">🧠 Adaptive Learning AI</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown("""
+    <div class="hero">
+        <div class="hero-small">Kurikulum Merdeka • IPA Kelas X</div>
+        <div class="hero-title">
+            🧬 NEXA<br>
+            Adaptive Learning
+        </div>
+        <div class="hero-desc">
+            Temukan cara belajar yang sesuai dengan kemampuanmu.
+            NEXA menganalisis pemahaman awal dan membantu kamu
+            belajar secara bertahap melalui pengalaman belajar yang personal.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown(
-        '<div class="subtitle">Belajar sesuai kemampuanmu</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown("## 🚀 Mulai Perjalanan Belajarmu")
 
-    st.markdown("### 👤 Mulai Belajar")
+    col1, col2 = st.columns([1, 1])
 
-    name = st.text_input(
-        "Nama Siswa",
-        placeholder="Masukkan nama Anda"
-    )
+    with col1:
 
-    material = st.selectbox(
-        "Pilih Materi",
-        [
-            "Ekosistem",
-            "Sistem Pernapasan",
-            "Pencemaran Lingkungan"
-        ]
-    )
+        st.markdown("""
+        <div class="card">
+            <div class="card-title">👤 Identitas Siswa</div>
+            <div class="card-desc">
+                Masukkan identitas untuk memulai pembelajaran.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    if st.button(
-        "🚀 Mulai Belajar",
-        use_container_width=True
-    ):
+        name = st.text_input(
+            "Nama siswa",
+            placeholder="Contoh: Ahmad"
+        )
 
-        if name.strip() == "":
-            st.warning("Silakan masukkan nama terlebih dahulu.")
+        student_code = st.text_input(
+            "Kode siswa",
+            placeholder="Contoh: S001"
+        )
 
-        else:
-            st.session_state.name = name
-            st.session_state.material = material
-            st.session_state.page = "diagnostic"
-            st.rerun()
+    with col2:
+
+        st.markdown("""
+        <div class="card">
+            <div class="card-title">📚 Pilih Materi IPA</div>
+            <div class="card-desc">
+                Pilih salah satu topik untuk memulai tes diagnostik.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        material = st.selectbox(
+            "Materi",
+            [
+                "Ekosistem",
+                "Keanekaragaman Hayati",
+                "Perubahan Lingkungan",
+                "Virus",
+                "Bakteri"
+            ]
+        )
+
+        st.write("")
+
+        if st.button(
+            "🚀 Mulai Pembelajaran",
+            use_container_width=True
+        ):
+
+            if not name.strip():
+                st.warning("Masukkan nama siswa terlebih dahulu.")
+
+            elif not student_code.strip():
+                st.warning("Masukkan kode siswa terlebih dahulu.")
+
+            else:
+
+                st.session_state.name = name.strip()
+                st.session_state.student_code = student_code.strip().upper()
+                st.session_state.material = material
+                st.session_state.page = "diagnostic"
+
+                st.rerun()
+
+    st.markdown("---")
+
+    st.markdown("## 🔬 Topik IPA Kelas X")
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.markdown("""
+        <div class="material-card">
+            <div class="material-icon">🌱</div>
+            <div class="material-title">Ekosistem</div>
+            <div class="material-text">
+                Memahami hubungan antara makhluk hidup
+                dan lingkungan dalam suatu ekosistem.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c2:
+        st.markdown("""
+        <div class="material-card">
+            <div class="material-icon">🧬</div>
+            <div class="material-title">Keanekaragaman Hayati</div>
+            <div class="material-text">
+                Mengenal tingkat keanekaragaman dan
+                pentingnya menjaga biodiversitas.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c3:
+        st.markdown("""
+        <div class="material-card">
+            <div class="material-icon">🌍</div>
+            <div class="material-title">Perubahan Lingkungan</div>
+            <div class="material-text">
+                Menganalisis penyebab dan dampak perubahan
+                lingkungan serta upaya penanggulangannya.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("")
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.markdown("""
+        <div class="stat">
+            <div class="stat-number">5</div>
+            <div class="stat-label">Topik Pembelajaran</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c2:
+        st.markdown("""
+        <div class="stat">
+            <div class="stat-number">AI</div>
+            <div class="stat-label">Pembelajaran Adaptif</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c3:
+        st.markdown("""
+        <div class="stat">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">Jalur Belajar Personal</div>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # =========================================================
@@ -116,66 +435,103 @@ if st.session_state.page == "home":
 
 elif st.session_state.page == "diagnostic":
 
-    st.title("📝 Tes Diagnostik")
+    st.title("🧠 Tes Diagnostik")
 
-    st.write(
-        f"Halo, **{st.session_state.name}**! "
-        "Jawab 3 pertanyaan berikut untuk mengetahui "
-        "tingkat pemahaman awalmu."
+    st.caption(
+        f"{st.session_state.name} • "
+        f"{st.session_state.material}"
     )
 
-    st.divider()
+    st.progress(0.33)
 
-    # SOAL 1
-    st.subheader("Pertanyaan 1 dari 3")
+    st.markdown("""
+    <div class="card">
+        <div class="card-title">
+            Mengapa ada tes diagnostik?
+        </div>
+        <div class="card-desc">
+            Tes ini bukan untuk menentukan nilai rapor.
+            Sistem menggunakannya untuk mengetahui konsep
+            mana yang sudah kamu pahami dan mana yang perlu diperkuat.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # QUESTION 1
+
+    st.markdown("""
+    <div class="question-box">
+        <div class="question-number">Pertanyaan 01 • Komponen Ekosistem</div>
+        <div class="question-text">
+            Organisme yang mampu membuat makanan sendiri
+            melalui proses fotosintesis disebut...
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     q1 = st.radio(
-        "Organisme yang mampu membuat makanan sendiri disebut...",
+        "Pilih jawaban:",
         [
             "Konsumen",
             "Produsen",
             "Pengurai",
-            "Predator"
+            "Detritivor"
         ],
-        key="q1"
+        key="q1_radio"
     )
 
-    st.divider()
+    # QUESTION 2
 
-    # SOAL 2
-    st.subheader("Pertanyaan 2 dari 3")
+    st.markdown("""
+    <div class="question-box">
+        <div class="question-number">Pertanyaan 02 • Aliran Energi</div>
+        <div class="question-text">
+            Perhatikan rantai makanan berikut:
+            Rumput → Belalang → Katak → Ular.
+            Organisme yang memperoleh energi langsung
+            dari rumput adalah...
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     q2 = st.radio(
-        "Dalam rantai makanan, organisme yang mendapatkan energi langsung dari produsen disebut...",
+        "Pilih jawaban:",
         [
-            "Konsumen tingkat I",
-            "Konsumen tingkat II",
-            "Pengurai",
-            "Predator puncak"
+            "Belalang",
+            "Katak",
+            "Ular",
+            "Pengurai"
         ],
-        key="q2"
+        key="q2_radio"
     )
 
-    st.divider()
+    # QUESTION 3
 
-    # SOAL 3
-    st.subheader("Pertanyaan 3 dari 3")
+    st.markdown("""
+    <div class="question-box">
+        <div class="question-number">Pertanyaan 03 • Dekomposer</div>
+        <div class="question-text">
+            Apa fungsi utama bakteri dan jamur sebagai
+            organisme pengurai dalam ekosistem?
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     q3 = st.radio(
-        "Apa peran utama organisme pengurai dalam ekosistem?",
+        "Pilih jawaban:",
         [
-            "Menghasilkan makanan",
-            "Memakan semua konsumen",
-            "Menguraikan sisa makhluk hidup",
-            "Menghasilkan oksigen"
+            "Menghasilkan energi matahari",
+            "Menghasilkan makanan bagi produsen",
+            "Menguraikan sisa organisme",
+            "Menghentikan rantai makanan"
         ],
-        key="q3"
+        key="q3_radio"
     )
 
-    st.divider()
+    st.write("")
 
     if st.button(
-        "📊 Analisis Jawaban",
+        "📊 Analisis Pemahaman Saya",
         use_container_width=True
     ):
 
@@ -184,27 +540,32 @@ elif st.session_state.page == "diagnostic":
         if q1 == "Produsen":
             score += 1
 
-        if q2 == "Konsumen tingkat I":
+        if q2 == "Belalang":
             score += 1
 
-        if q3 == "Menguraikan sisa makhluk hidup":
+        if q3 == "Menguraikan sisa organisme":
             score += 1
 
         st.session_state.score = score
 
-        if score <= 1:
-            st.session_state.level = "Dasar"
+        if score == 0:
+            st.session_state.level = "Pemula"
             st.session_state.focus = "Konsep dasar ekosistem"
+
+        elif score == 1:
+            st.session_state.level = "Dasar"
+            st.session_state.focus = "Komponen dan hubungan dalam ekosistem"
 
         elif score == 2:
             st.session_state.level = "Menengah"
-            st.session_state.focus = "Hubungan antarorganisme"
+            st.session_state.focus = "Aliran energi dan hubungan antarorganisme"
 
         else:
-            st.session_state.level = "Lanjutan"
+            st.session_state.level = "Mahir"
             st.session_state.focus = "Penerapan konsep ekosistem"
 
         st.session_state.page = "analysis"
+
         st.rerun()
 
 
@@ -214,68 +575,107 @@ elif st.session_state.page == "diagnostic":
 
 elif st.session_state.page == "analysis":
 
-    st.title("📊 Analisis Kemampuan")
+    st.title("📊 Profil Pemahaman")
 
-    st.write(
-        f"**Siswa:** {st.session_state.name}"
+    percentage = int(
+        (st.session_state.score / 3) * 100
     )
 
-    score = st.session_state.score
+    st.markdown(
+        f"""
+        <div class="result-box">
 
-    percentage = int((score / 3) * 100)
+            <div class="small-muted">
+                HASIL TES DIAGNOSTIK
+            </div>
 
-    st.metric(
-        "Skor Diagnostik",
-        f"{percentage}%"
+            <div class="big-score">
+                {percentage}%
+            </div>
+
+            <div>
+                Tingkat pemahaman awal
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    st.divider()
+    st.write("")
 
-    st.subheader("🧠 Analisis AI")
+    c1, c2, c3 = st.columns(3)
 
-    if st.session_state.level == "Dasar":
-
-        st.warning(
-            "Pemahaman dasar masih perlu diperkuat."
+    with c1:
+        st.metric(
+            "Skor",
+            f"{st.session_state.score}/3"
         )
 
-        st.write(
-            "🎯 Fokus pembelajaran:"
+    with c2:
+        st.metric(
+            "Level",
+            st.session_state.level
         )
 
-        st.info(
-            st.session_state.focus
+    with c3:
+        st.metric(
+            "Materi",
+            st.session_state.material
         )
 
-    elif st.session_state.level == "Menengah":
+    st.markdown("## 🔎 Analisis Sistem")
 
-        st.info(
-            "Sebagian besar konsep dasar sudah dikuasai."
-        )
+    if st.session_state.score <= 1:
 
-        st.write("🎯 Fokus pembelajaran:")
+        st.markdown("""
+        <div class="ai-box">
+            <div class="ai-label">🤖 AI Learning Analysis</div>
+            <div class="ai-question">
+                Pemahaman dasar masih perlu diperkuat.
+            </div>
+            <p>
+                Sistem akan memberikan penjelasan secara bertahap
+                dan menggunakan contoh sederhana sebelum menuju
+                soal yang lebih kompleks.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.info(
-            st.session_state.focus
-        )
+    elif st.session_state.score == 2:
+
+        st.markdown("""
+        <div class="ai-box">
+            <div class="ai-label">🤖 AI Learning Analysis</div>
+            <div class="ai-question">
+                Kamu sudah memahami sebagian besar konsep dasar.
+            </div>
+            <p>
+                Sistem akan melewati materi yang sudah dikuasai
+                dan fokus pada konsep yang masih perlu diperkuat.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
     else:
 
-        st.success(
-            "Pemahaman dasar sudah baik."
-        )
+        st.markdown("""
+        <div class="ai-box">
+            <div class="ai-label">🤖 AI Learning Analysis</div>
+            <div class="ai-question">
+                Pemahaman awalmu sudah sangat baik.
+            </div>
+            <p>
+                Sistem akan memberikan tantangan yang lebih tinggi
+                dan mengarahkanmu pada penerapan konsep.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.write("🎯 Fokus pembelajaran:")
+    st.markdown("### 🎯 Fokus Pembelajaran")
 
-        st.info(
-            st.session_state.focus
-        )
-
-    st.divider()
-
-    st.write(
-        "🤖 Sistem akan menyesuaikan pembelajaran "
-        "berdasarkan hasil diagnostik."
+    st.info(
+        st.session_state.focus
     )
 
     if st.button(
@@ -284,6 +684,7 @@ elif st.session_state.page == "analysis":
     ):
 
         st.session_state.page = "tutor"
+
         st.rerun()
 
 
@@ -296,33 +697,57 @@ elif st.session_state.page == "tutor":
     st.title("🤖 AI Tutor")
 
     st.caption(
-        f"Materi: {st.session_state.material}"
+        f"{st.session_state.material} • "
+        f"Level {st.session_state.level}"
     )
 
-    st.divider()
+    st.markdown("""
+    <div class="ai-box">
 
-    st.success(
-        f"Halo {st.session_state.name}! "
-        "Saya akan menyesuaikan pembelajaran "
-        "berdasarkan hasil tesmu."
+        <div class="ai-label">
+            🧠 Adaptive AI Tutor
+        </div>
+
+        <div class="ai-question">
+            Saya sudah melihat hasil tes diagnostikmu.
+            Sekarang kita belajar sesuai dengan bagian
+            yang masih perlu diperkuat.
+        </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### 🎯 Fokus Belajarmu")
+
+    st.info(
+        st.session_state.focus
     )
 
-    st.markdown(
-        f"""
-### 🎯 Fokus pembelajaran
+    st.markdown("### 💬 Mari Berdiskusi")
 
-**{st.session_state.focus}**
+    st.markdown("""
+    <div class="card">
 
-Mari kita mulai dari pertanyaan berikut.
+        <div class="card-title">
+            🤖 AI Tutor
+        </div>
 
-**Menurutmu, mengapa produsen sangat penting "
-"bagi keberlangsungan suatu ekosistem?**
-"""
-    )
+        <p>
+        Menurutmu, apa yang akan terjadi pada sebuah ekosistem
+        jika jumlah produsen tiba-tiba menurun drastis?
+        </p>
+
+        <p class="small-muted">
+        Tidak perlu takut salah. Jelaskan dengan bahasamu sendiri.
+        </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
     answer = st.text_area(
-        "Tulis jawabanmu:",
-        placeholder="Tuliskan jawaban dengan bahasamu sendiri..."
+        "Jawabanmu",
+        placeholder="Tuliskan pemikiranmu di sini...",
+        height=140
     )
 
     if st.button(
@@ -330,43 +755,49 @@ Mari kita mulai dari pertanyaan berikut.
         use_container_width=True
     ):
 
-        if answer.strip() == "":
-            st.warning("Silakan tuliskan jawaban terlebih dahulu.")
+        if not answer.strip():
+
+            st.warning(
+                "Coba tuliskan jawabanmu terlebih dahulu."
+            )
 
         else:
 
             st.success(
-                "Jawaban diterima! 🤖"
+                "Jawaban diterima."
             )
 
-            st.write(
-                "AI Tutor:"
-            )
+            st.markdown("""
+            <div class="ai-box">
 
-            st.info(
-                "Jawabanmu sudah menunjukkan pemahaman awal. "
-                "Sekarang mari kita hubungkan konsep produsen "
-                "dengan aliran energi dalam ekosistem."
-            )
+                <div class="ai-label">
+                    🤖 AI Tutor
+                </div>
 
-            st.write(
-                "💡 **Pertanyaan berikutnya:**"
-            )
+                <div class="ai-question">
+                    Bagus. Kamu sudah mulai menghubungkan
+                    produsen dengan keberlangsungan ekosistem.
+                </div>
 
-            st.write(
-                "Apa yang akan terjadi pada konsumen "
-                "jika jumlah produsen dalam suatu ekosistem "
-                "menurun secara drastis?"
-            )
+                <p>
+                Sekarang kita naik satu tingkat.
+                Jika produsen berkurang karena kekeringan,
+                bagaimana kondisi konsumen tingkat pertama?
+                Jelaskan alasannya.
+                </p>
+
+            </div>
+            """, unsafe_allow_html=True)
 
     st.divider()
 
     if st.button(
-        "🎯 Selesaikan Pembelajaran",
+        "🎯 Lanjut ke Evaluasi",
         use_container_width=True
     ):
 
         st.session_state.page = "result"
+
         st.rerun()
 
 
@@ -376,68 +807,97 @@ Mari kita mulai dari pertanyaan berikut.
 
 elif st.session_state.page == "result":
 
-    st.title("🎉 Pembelajaran Selesai")
+    st.markdown("""
+    <div class="hero">
+        <div class="hero-small">Learning Journey Completed</div>
+        <div class="hero-title">
+            🎉 Hebat! Pembelajaran selesai.
+        </div>
+        <div class="hero-desc">
+            Berikut adalah ringkasan perjalanan belajar
+            yang telah kamu lakukan.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.write(
-        f"### {st.session_state.name}"
+    st.markdown(
+        f"## 👋 {st.session_state.name}"
     )
 
-    st.divider()
+    st.write(
+        f"Materi: **{st.session_state.material}**"
+    )
 
-    st.subheader("📈 Hasil Pembelajaran")
+    c1, c2, c3 = st.columns(3)
 
-    col1, col2 = st.columns(2)
-
-    with col1:
+    with c1:
         st.metric(
             "Pre-test",
             f"{int((st.session_state.score / 3) * 100)}%"
         )
 
-    with col2:
+    with c2:
         st.metric(
             "Post-test",
             "100%"
         )
 
-    st.divider()
+    with c3:
+        improvement = 100 - int(
+            (st.session_state.score / 3) * 100
+        )
 
-    st.subheader("🎯 Profil Belajar")
+        st.metric(
+            "Peningkatan",
+            f"+{improvement}%"
+        )
 
-    st.write(
-        f"**Level awal:** {st.session_state.level}"
-    )
+    st.write("")
 
-    st.write(
-        f"**Materi diperkuat:** {st.session_state.focus}"
-    )
+    st.markdown("""
+    <div class="result-box">
+
+        <div class="small-muted">
+            PROFIL PEMBELAJARAN
+        </div>
+
+        <h2>🎯 Fokus yang diperkuat</h2>
+
+        <h3>
+        Konsep dan penerapan Ekosistem
+        </h3>
+
+        <p>
+        Sistem merekomendasikan kamu melanjutkan
+        ke materi berikutnya setelah memahami
+        konsep yang diperkuat.
+        </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.write("")
 
     st.success(
-        "🟢 Sistem merekomendasikan siswa "
-        "melanjutkan ke materi berikutnya."
+        "🟢 Status pembelajaran: Penguasaan meningkat"
     )
 
-    st.divider()
-
     st.info(
-        "Prototype ini mensimulasikan pembelajaran "
-        "adaptif. Pada versi berikutnya, bagian AI "
-        "akan menggunakan model AI sungguhan."
+        "Pada versi berikutnya, AI Tutor akan menggunakan "
+        "model AI sungguhan dan seluruh progress siswa "
+        "akan disimpan dalam database."
     )
 
     if st.button(
-        "🔄 Mulai Lagi",
+        "🔄 Mulai Pembelajaran Baru",
         use_container_width=True
     ):
 
-        for key in [
-            "score",
-            "answers",
-            "level",
-            "focus"
-        ]:
-            if key in st.session_state:
-                del st.session_state[key]
+        for key in defaults:
+            if key not in ["page"]:
+                if key in st.session_state:
+                    del st.session_state[key]
 
         st.session_state.page = "home"
+
         st.rerun()
