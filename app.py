@@ -1,5 +1,5 @@
 import streamlit as st
-
+import textwrap
 # =========================================================
 # SALiM
 # Sains Adaptive Learning Machine
@@ -407,7 +407,7 @@ if st.session_state.page == "home":
 
     # HERO
     st.markdown(
-        """
+        textwrap.dedent("""
         <div class="hero">
 
             <div class="hero-label">
@@ -429,7 +429,7 @@ if st.session_state.page == "home":
             </div>
 
         </div>
-        """,
+        """),
         unsafe_allow_html=True
     )
 
