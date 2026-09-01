@@ -1,8 +1,7 @@
 import streamlit as st
-import textwrap
+
 # =========================================================
-# SALiM
-# Sains Adaptive Learning Machine
+# KONFIGURASI SALiM
 # =========================================================
 
 st.set_page_config(
@@ -16,382 +15,389 @@ st.set_page_config(
 # SESSION STATE
 # =========================================================
 
-if "page" not in st.session_state:
-    st.session_state.page = "home"
+defaults = {
+    "page": "home",
+    "name": "",
+    "material": "Ekosistem",
+    "score": 0,
+    "answers": {},
+    "level": "",
+    "focus": "",
+    "tutor_answer": ""
+}
 
-if "name" not in st.session_state:
-    st.session_state.name = ""
-
-if "score" not in st.session_state:
-    st.session_state.score = 0
-
-if "answers" not in st.session_state:
-    st.session_state.answers = {}
-
-if "material" not in st.session_state:
-    st.session_state.material = "Ekosistem"
-
-if "level" not in st.session_state:
-    st.session_state.level = ""
-
-if "focus" not in st.session_state:
-    st.session_state.focus = ""
+for key, value in defaults.items():
+    if key not in st.session_state:
+        st.session_state[key] = value
 
 
 # =========================================================
 # CSS
 # =========================================================
 
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<style>
 
-    /* ================================
-       GLOBAL
-       ================================ */
+/* =====================================================
+   BACKGROUND
+   ===================================================== */
 
-    .stApp {
-        background-color: #F4F7FB;
-        color: #172033;
-    }
+.stApp {
+    background: #F3F6FA;
+}
 
-    .block-container {
-        max-width: 950px;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
+.main .block-container {
+    max-width: 920px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
 
-    /* Semua teks utama */
-    p, label, span {
-        color: #172033;
-    }
 
-    /* ================================
-       HERO
-       ================================ */
+/* =====================================================
+   TYPOGRAPHY
+   ===================================================== */
 
-    .hero {
-        background: linear-gradient(
-            135deg,
-            #111827 0%,
-            #1E293B 45%,
-            #3730A3 100%
-        );
+h1, h2, h3 {
+    color: #172033 !important;
+}
 
-        padding: 42px 38px;
-        border-radius: 26px;
-        margin-bottom: 30px;
+p, label {
+    color: #334155;
+}
 
-        box-shadow:
-            0 18px 45px rgba(30, 41, 59, 0.18);
-    }
+.small-text {
+    color: #64748B;
+    font-size: 14px;
+}
 
-    .hero-label {
-        color: #A5B4FC !important;
-        font-size: 13px;
-        font-weight: 800;
-        letter-spacing: 1.8px;
-        margin-bottom: 8px;
-    }
 
-    .hero-title {
-        color: #FFFFFF !important;
-        font-size: 48px;
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 6px;
-    }
+/* =====================================================
+   HERO
+   ===================================================== */
 
-    .hero-subtitle {
-        color: #E0E7FF !important;
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 14px;
-    }
+.hero-box {
+    background: linear-gradient(
+        135deg,
+        #111827,
+        #1E293B 55%,
+        #3730A3
+    );
 
-    .hero-description {
-        color: #CBD5E1 !important;
-        font-size: 15px;
-        line-height: 1.7;
-        max-width: 720px;
-    }
+    border-radius: 24px;
+    padding: 40px 35px;
+    margin-bottom: 30px;
 
-    /* ================================
-       SECTION
-       ================================ */
+    box-shadow:
+        0 15px 35px rgba(15, 23, 42, 0.15);
+}
 
-    .section-title {
-        color: #172033 !important;
-        font-size: 25px;
-        font-weight: 800;
-        margin-top: 25px;
-        margin-bottom: 8px;
-    }
+.hero-small {
+    color: #A5B4FC;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
 
-    .section-description {
-        color: #64748B !important;
-        font-size: 15px;
-        margin-bottom: 20px;
-    }
+.hero-title {
+    color: #FFFFFF;
+    font-size: 48px;
+    font-weight: 800;
+    margin-top: 8px;
+    margin-bottom: 3px;
+}
 
-    /* ================================
-       CARD
-       ================================ */
+.hero-name {
+    color: #E0E7FF;
+    font-size: 19px;
+    font-weight: 650;
+}
 
-    .card {
-        background-color: #FFFFFF;
-        padding: 25px;
-        border-radius: 20px;
-        border: 1px solid #E2E8F0;
-        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
-        margin-bottom: 20px;
-    }
+.hero-description {
+    color: #CBD5E1;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-top: 15px;
+}
 
-    .card-title {
-        color: #172033 !important;
-        font-size: 19px;
-        font-weight: 750;
-        margin-bottom: 7px;
-    }
 
-    .card-description {
-        color: #64748B !important;
-        font-size: 14px;
-        line-height: 1.6;
-    }
+/* =====================================================
+   SECTION
+   ===================================================== */
 
-    /* ================================
-       MATERIAL CARD
-       ================================ */
+.section-title {
+    font-size: 25px;
+    font-weight: 800;
+    color: #172033;
+    margin-top: 25px;
+}
 
-    .material-card {
-        background-color: #FFFFFF;
-        padding: 23px;
-        border-radius: 20px;
-        border: 1px solid #E2E8F0;
-        min-height: 170px;
-        box-shadow: 0 7px 22px rgba(15, 23, 42, 0.045);
-    }
+.section-subtitle {
+    color: #64748B;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
 
-    .material-icon {
-        font-size: 30px;
-        margin-bottom: 8px;
-    }
 
-    .material-title {
-        color: #172033 !important;
-        font-size: 18px;
-        font-weight: 750;
-        margin-bottom: 8px;
-    }
+/* =====================================================
+   CARD
+   ===================================================== */
 
-    .material-description {
-        color: #64748B !important;
-        font-size: 14px;
-        line-height: 1.55;
-    }
+.card-box {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 18px;
+    padding: 23px;
+    margin-bottom: 18px;
 
-    /* ================================
-       QUESTION
-       ================================ */
+    box-shadow:
+        0 6px 18px rgba(15, 23, 42, 0.05);
+}
 
-    .question-card {
-        background-color: #FFFFFF;
-        padding: 26px;
-        border-radius: 20px;
-        border: 1px solid #E2E8F0;
-        margin-top: 22px;
-        margin-bottom: 8px;
+.card-title {
+    color: #172033;
+    font-size: 18px;
+    font-weight: 750;
+    margin-bottom: 7px;
+}
 
-        box-shadow:
-            0 8px 25px rgba(15, 23, 42, 0.05);
-    }
+.card-text {
+    color: #64748B;
+    font-size: 14px;
+    line-height: 1.6;
+}
 
-    .question-number {
-        color: #4F46E5 !important;
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-    }
 
-    .question-text {
-        color: #172033 !important;
-        font-size: 18px;
-        font-weight: 700;
-        line-height: 1.65;
-    }
+/* =====================================================
+   MATERIAL
+   ===================================================== */
 
-    /* ================================
-       AI CARD
-       ================================ */
+.material-box {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 18px;
+    padding: 20px;
+    min-height: 165px;
 
-    .ai-card {
-        background: linear-gradient(
-            135deg,
-            #EEF2FF,
-            #F8FAFC
-        );
+    box-shadow:
+        0 6px 18px rgba(15, 23, 42, 0.04);
+}
 
-        padding: 27px;
-        border-radius: 22px;
-        border: 1px solid #C7D2FE;
-        margin: 20px 0;
-    }
+.material-icon {
+    font-size: 30px;
+}
 
-    .ai-label {
-        color: #4338CA !important;
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-    }
+.material-name {
+    color: #172033;
+    font-size: 17px;
+    font-weight: 750;
+    margin-top: 8px;
+}
 
-    .ai-title {
-        color: #1E1B4B !important;
-        font-size: 20px;
-        font-weight: 750;
-        line-height: 1.5;
-    }
+.material-text {
+    color: #64748B;
+    font-size: 13px;
+    line-height: 1.55;
+    margin-top: 6px;
+}
 
-    .ai-text {
-        color: #475569 !important;
-        font-size: 15px;
-        line-height: 1.7;
-    }
 
-    /* ================================
-       RESULT
-       ================================ */
+/* =====================================================
+   AI BOX
+   ===================================================== */
 
-    .result-card {
-        background-color: #FFFFFF;
-        padding: 35px;
-        border-radius: 24px;
-        border: 1px solid #E2E8F0;
-        text-align: center;
+.ai-box {
+    background: #EEF2FF;
+    border: 1px solid #C7D2FE;
+    border-radius: 18px;
+    padding: 23px;
+    margin: 20px 0;
+}
 
-        box-shadow:
-            0 10px 30px rgba(15, 23, 42, 0.07);
+.ai-label {
+    color: #4338CA;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
 
-        margin: 25px 0;
-    }
+.ai-title {
+    color: #1E1B4B;
+    font-size: 19px;
+    font-weight: 750;
+    margin-top: 6px;
+}
 
-    .score {
-        color: #4F46E5 !important;
-        font-size: 60px;
-        font-weight: 850;
-        line-height: 1;
-    }
+.ai-text {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.65;
+    margin-top: 8px;
+}
 
-    .score-label {
-        color: #64748B !important;
-        font-size: 14px;
-        margin-top: 8px;
-    }
 
-    /* ================================
-       METRIC
-       ================================ */
+/* =====================================================
+   QUESTION
+   ===================================================== */
 
-    [data-testid="stMetric"] {
-        background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        padding: 18px;
-        border-radius: 16px;
-    }
+.question-box {
+    background: #FFFFFF;
+    border-left: 5px solid #4F46E5;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 22px;
+    margin-bottom: 10px;
 
-    [data-testid="stMetricLabel"] {
-        color: #64748B !important;
-    }
+    box-shadow:
+        0 5px 15px rgba(15, 23, 42, 0.04);
+}
 
-    [data-testid="stMetricValue"] {
-        color: #172033 !important;
-    }
+.question-label {
+    color: #4F46E5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
 
-    /* ================================
-       INPUT
-       ================================ */
+.question-text {
+    color: #172033;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.6;
+    margin-top: 7px;
+}
 
-    div[data-baseweb="input"] {
-        background-color: #FFFFFF;
-        border-radius: 12px;
-    }
 
-    div[data-baseweb="select"] {
-        background-color: #FFFFFF;
-        border-radius: 12px;
-    }
+/* =====================================================
+   RESULT
+   ===================================================== */
 
-    textarea {
-        background-color: #FFFFFF !important;
-        color: #172033 !important;
-        border-radius: 12px !important;
-    }
+.result-box {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 22px;
+    padding: 32px;
+    text-align: center;
+    margin: 25px 0;
 
-    /* ================================
-       BUTTON
-       ================================ */
+    box-shadow:
+        0 8px 25px rgba(15, 23, 42, 0.06);
+}
 
-    .stButton > button {
-        border-radius: 12px;
-        min-height: 45px;
-        font-weight: 700;
-        border: 1px solid #CBD5E1;
-        background-color: #FFFFFF;
-        color: #172033;
-        transition: all 0.2s ease;
-    }
+.result-score {
+    color: #4F46E5;
+    font-size: 58px;
+    font-weight: 850;
+}
 
-    .stButton > button:hover {
-        border-color: #4F46E5;
-        color: #4338CA;
-        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.12);
-    }
+.result-label {
+    color: #64748B;
+    font-size: 14px;
+}
 
-    /* ================================
-       RADIO
-       ================================ */
 
-    div[role="radiogroup"] label {
-        background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 10px;
-        padding: 10px 14px;
-        margin-bottom: 7px;
-    }
+/* =====================================================
+   INPUT
+   ===================================================== */
 
-    /* ================================
-       FOOTER
-       ================================ */
+div[data-baseweb="input"] {
+    background: #FFFFFF;
+    border-radius: 10px;
+}
 
-    .footer {
-        text-align: center;
-        color: #64748B !important;
-        font-size: 13px;
-        line-height: 1.6;
-        margin-top: 45px;
-        padding-top: 20px;
-        border-top: 1px solid #E2E8F0;
-    }
+div[data-baseweb="select"] {
+    background: #FFFFFF;
+    border-radius: 10px;
+}
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+textarea {
+    background: #FFFFFF !important;
+    color: #172033 !important;
+}
+
+
+/* =====================================================
+   BUTTON
+   ===================================================== */
+
+.stButton > button {
+    border-radius: 11px;
+    min-height: 45px;
+    font-weight: 700;
+}
+
+.stButton > button[kind="primary"] {
+    background: #4F46E5;
+    border-color: #4F46E5;
+    color: #FFFFFF;
+}
+
+.stButton > button[kind="primary"]:hover {
+    background: #4338CA;
+    border-color: #4338CA;
+}
+
+
+/* =====================================================
+   RADIO
+   ===================================================== */
+
+div[role="radiogroup"] label {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 9px 12px;
+    margin-bottom: 6px;
+}
+
+
+/* =====================================================
+   METRIC
+   ===================================================== */
+
+[data-testid="stMetric"] {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+[data-testid="stMetricLabel"] {
+    color: #64748B !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: #172033 !important;
+}
+
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+    text-align: center;
+    color: #64748B;
+    font-size: 12px;
+    line-height: 1.7;
+    margin-top: 45px;
+    padding-top: 20px;
+    border-top: 1px solid #E2E8F0;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
 # =========================================================
 # FOOTER
 # =========================================================
 
-def show_footer():
+def footer():
     st.markdown(
         """
         <div class="footer">
-            🧬 <b>SALiM</b> • Sains Adaptive Learning Machine<br>
+            🧬 SALiM — Sains Adaptive Learning Machine<br>
+            IPA Kelas X • Kurikulum Merdeka<br>
             Developed by Tabdulghaffur © 2026
         </div>
         """,
@@ -405,31 +411,25 @@ def show_footer():
 
 if st.session_state.page == "home":
 
-    # HERO
     st.markdown(
-        textwrap.dedent("""
-        <div class="hero">
-
-            <div class="hero-label">
+        """
+        <div class="hero-box">
+            <div class="hero-small">
                 IPA KELAS X • KURIKULUM MERDEKA
             </div>
-
             <div class="hero-title">
                 🧬 SALiM
             </div>
-
-            <div class="hero-subtitle">
+            <div class="hero-name">
                 Sains Adaptive Learning Machine
             </div>
-
             <div class="hero-description">
-                Sistem pembelajaran adaptif yang membantu
+                Platform pembelajaran adaptif yang membantu
                 siswa belajar IPA berdasarkan kemampuan awal,
                 kebutuhan belajar, dan perkembangan pemahamannya.
             </div>
-
         </div>
-        """),
+        """,
         unsafe_allow_html=True
     )
 
@@ -439,37 +439,33 @@ if st.session_state.page == "home":
     )
 
     st.markdown(
-        '<div class="section-description">'
-        'Masukkan identitas dan pilih materi yang ingin dipelajari.'
+        '<div class="section-subtitle">'
+        'Masukkan identitas dan pilih materi pembelajaran.'
         '</div>',
         unsafe_allow_html=True
     )
 
-    # IDENTITAS
     col1, col2 = st.columns(2)
 
     with col1:
 
         st.markdown(
             """
-            <div class="card">
-
+            <div class="card-box">
                 <div class="card-title">
                     👤 Identitas Siswa
                 </div>
-
-                <div class="card-description">
-                    Data ini digunakan untuk mengenali
-                    peserta pembelajaran.
+                <div class="card-text">
+                    Masukkan nama siswa sebelum memulai
+                    pembelajaran.
                 </div>
-
             </div>
             """,
             unsafe_allow_html=True
         )
 
         name = st.text_input(
-            "Nama Siswa",
+            "Nama siswa",
             placeholder="Contoh: Ahmad"
         )
 
@@ -477,43 +473,41 @@ if st.session_state.page == "home":
 
         st.markdown(
             """
-            <div class="card">
-
+            <div class="card-box">
                 <div class="card-title">
-                    📚 Materi Pembelajaran
+                    📚 Pilih Materi
                 </div>
-
-                <div class="card-description">
+                <div class="card-text">
                     Pilih materi IPA Kelas X yang
                     ingin dipelajari.
                 </div>
-
             </div>
             """,
             unsafe_allow_html=True
         )
 
         material = st.selectbox(
-            "Pilih Materi",
+            "Materi",
             [
                 "Ekosistem",
                 "Sistem Pernapasan",
                 "Pencemaran Lingkungan"
-            ]
+            ],
+            label_visibility="collapsed"
         )
 
     st.write("")
 
     if st.button(
-        "🚀 Mulai Belajar",
+        "🚀 Mulai Pembelajaran",
         type="primary",
         use_container_width=True
     ):
 
-        if name.strip() == "":
+        if not name.strip():
 
             st.warning(
-                "Silakan masukkan nama terlebih dahulu."
+                "Silakan masukkan nama siswa terlebih dahulu."
             )
 
         else:
@@ -524,15 +518,14 @@ if st.session_state.page == "home":
 
             st.rerun()
 
-    # MATERI
     st.markdown(
         '<div class="section-title">🔬 Materi IPA Kelas X</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="section-description">'
-        'Tiga materi prototype yang tersedia pada SALiM.'
+        '<div class="section-subtitle">'
+        'Materi yang tersedia dalam prototype SALiM.'
         '</div>',
         unsafe_allow_html=True
     )
@@ -543,21 +536,13 @@ if st.session_state.page == "home":
 
         st.markdown(
             """
-            <div class="material-card">
-
-                <div class="material-icon">
-                    🌱
-                </div>
-
-                <div class="material-title">
-                    Ekosistem
-                </div>
-
-                <div class="material-description">
+            <div class="material-box">
+                <div class="material-icon">🌱</div>
+                <div class="material-name">Ekosistem</div>
+                <div class="material-text">
                     Hubungan antara makhluk hidup
-                    dan lingkungan dalam suatu ekosistem.
+                    dan lingkungan.
                 </div>
-
             </div>
             """,
             unsafe_allow_html=True
@@ -567,21 +552,15 @@ if st.session_state.page == "home":
 
         st.markdown(
             """
-            <div class="material-card">
-
-                <div class="material-icon">
-                    🫁
-                </div>
-
-                <div class="material-title">
+            <div class="material-box">
+                <div class="material-icon">🫁</div>
+                <div class="material-name">
                     Sistem Pernapasan
                 </div>
-
-                <div class="material-description">
-                    Mengenal organ, mekanisme,
-                    dan proses pernapasan manusia.
+                <div class="material-text">
+                    Organ dan mekanisme
+                    pernapasan manusia.
                 </div>
-
             </div>
             """,
             unsafe_allow_html=True
@@ -591,31 +570,25 @@ if st.session_state.page == "home":
 
         st.markdown(
             """
-            <div class="material-card">
-
-                <div class="material-icon">
-                    🌍
+            <div class="material-box">
+                <div class="material-icon">🌍</div>
+                <div class="material-name">
+                    Pencemaran
                 </div>
-
-                <div class="material-title">
-                    Pencemaran Lingkungan
+                <div class="material-text">
+                    Penyebab, dampak, dan
+                    penanggulangan pencemaran.
                 </div>
-
-                <div class="material-description">
-                    Mengenal penyebab, dampak,
-                    dan upaya mengatasi pencemaran.
-                </div>
-
             </div>
             """,
             unsafe_allow_html=True
         )
 
-    show_footer()
+    footer()
 
 
 # =========================================================
-# DIAGNOSTIC TEST
+# DIAGNOSTIC
 # =========================================================
 
 elif st.session_state.page == "diagnostic":
@@ -634,118 +607,115 @@ elif st.session_state.page == "diagnostic":
 
     st.markdown(
         """
-        <div class="ai-card">
-
+        <div class="ai-box">
             <div class="ai-label">
-                🧠 SALiM Diagnostic
+                SALiM DIAGNOSTIC
             </div>
-
             <div class="ai-title">
                 Mari mengetahui kemampuan awalmu.
             </div>
-
             <div class="ai-text">
                 Jawablah tiga pertanyaan berikut dengan
-                sebaik mungkin. Tidak perlu khawatir jika
-                ada jawaban yang belum kamu ketahui.
+                sebaik mungkin. Hasilnya akan digunakan
+                untuk menentukan pembelajaran yang sesuai.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    st.divider()
-
+    # -----------------------------------------------------
     # SOAL 1
+    # -----------------------------------------------------
+
     st.markdown(
         """
-        <div class="question-card">
-
-            <div class="question-number">
-                Pertanyaan 1 dari 3
+        <div class="question-box">
+            <div class="question-label">
+                PERTANYAAN 1 DARI 3
             </div>
-
             <div class="question-text">
                 Organisme yang mampu membuat makanan
                 sendiri disebut...
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
     )
 
     q1 = st.radio(
-        "Pilih jawaban:",
+        "Jawaban pertanyaan 1",
         [
             "Konsumen",
             "Produsen",
             "Pengurai",
             "Predator"
         ],
-        key="q1"
+        key="q1",
+        label_visibility="collapsed"
     )
 
+    # -----------------------------------------------------
     # SOAL 2
+    # -----------------------------------------------------
+
     st.markdown(
         """
-        <div class="question-card">
-
-            <div class="question-number">
-                Pertanyaan 2 dari 3
+        <div class="question-box">
+            <div class="question-label">
+                PERTANYAAN 2 DARI 3
             </div>
-
             <div class="question-text">
                 Dalam rantai makanan, organisme yang
                 mendapatkan energi langsung dari produsen
                 disebut...
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
     )
 
     q2 = st.radio(
-        "Pilih jawaban:",
+        "Jawaban pertanyaan 2",
         [
             "Konsumen tingkat I",
             "Konsumen tingkat II",
             "Pengurai",
             "Predator puncak"
         ],
-        key="q2"
+        key="q2",
+        label_visibility="collapsed"
     )
 
+    # -----------------------------------------------------
     # SOAL 3
+    # -----------------------------------------------------
+
     st.markdown(
         """
-        <div class="question-card">
-
-            <div class="question-number">
-                Pertanyaan 3 dari 3
+        <div class="question-box">
+            <div class="question-label">
+                PERTANYAAN 3 DARI 3
             </div>
-
             <div class="question-text">
                 Apa peran utama organisme pengurai
                 dalam ekosistem?
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
     )
 
     q3 = st.radio(
-        "Pilih jawaban:",
+        "Jawaban pertanyaan 3",
         [
             "Menghasilkan makanan",
             "Memakan semua konsumen",
             "Menguraikan sisa makhluk hidup",
             "Menghasilkan oksigen"
         ],
-        key="q3"
+        key="q3",
+        label_visibility="collapsed"
     )
 
     st.write("")
@@ -768,6 +738,12 @@ elif st.session_state.page == "diagnostic":
             score += 1
 
         st.session_state.score = score
+
+        st.session_state.answers = {
+            "q1": q1,
+            "q2": q2,
+            "q3": q3
+        }
 
         if score <= 1:
 
@@ -793,17 +769,11 @@ elif st.session_state.page == "diagnostic":
                 "Penerapan konsep ekosistem"
             )
 
-        st.session_state.answers = {
-            "q1": q1,
-            "q2": q2,
-            "q3": q3
-        }
-
         st.session_state.page = "analysis"
 
         st.rerun()
 
-    show_footer()
+    footer()
 
 
 # =========================================================
@@ -815,7 +785,7 @@ elif st.session_state.page == "analysis":
     st.title("📊 Analisis Kemampuan")
 
     st.caption(
-        f"👤 Siswa: {st.session_state.name}"
+        f"👤 {st.session_state.name}"
     )
 
     st.progress(
@@ -823,25 +793,19 @@ elif st.session_state.page == "analysis":
         text="Tahap 2 dari 4 • Analisis Kemampuan"
     )
 
-    score = st.session_state.score
-
     percentage = int(
-        (score / 3) * 100
+        (st.session_state.score / 3) * 100
     )
 
-    # SCORE
     st.markdown(
         f"""
-        <div class="result-card">
-
-            <div class="score">
+        <div class="result-box">
+            <div class="result-score">
                 {percentage}%
             </div>
-
-            <div class="score-label">
+            <div class="result-label">
                 Skor Diagnostik
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
@@ -853,7 +817,7 @@ elif st.session_state.page == "analysis":
 
         st.metric(
             "Jawaban Benar",
-            f"{score} / 3"
+            f"{st.session_state.score} / 3"
         )
 
     with col2:
@@ -874,8 +838,9 @@ elif st.session_state.page == "analysis":
         )
 
         st.write(
-            "SALiM akan mengarahkan pembelajaran "
-            "pada penguatan konsep dasar."
+            "SALiM akan memprioritaskan penguatan "
+            "konsep dasar sebelum masuk ke konsep "
+            "yang lebih kompleks."
         )
 
     elif st.session_state.level == "Menengah":
@@ -906,27 +871,20 @@ elif st.session_state.page == "analysis":
         st.session_state.focus
     )
 
-    st.divider()
-
     st.markdown(
         """
-        <div class="ai-card">
-
+        <div class="ai-box">
             <div class="ai-label">
-                🤖 Adaptive Learning
+                ADAPTIVE LEARNING
             </div>
-
             <div class="ai-title">
                 Pembelajaran akan disesuaikan
                 dengan kemampuanmu.
             </div>
-
             <div class="ai-text">
-                SALiM menggunakan hasil tes diagnostik
-                sebagai dasar untuk menentukan arah
-                pembelajaran berikutnya.
+                Hasil tes diagnostik digunakan sebagai
+                dasar untuk menentukan fokus pembelajaran.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
@@ -942,7 +900,7 @@ elif st.session_state.page == "analysis":
 
         st.rerun()
 
-    show_footer()
+    footer()
 
 
 # =========================================================
@@ -955,7 +913,7 @@ elif st.session_state.page == "tutor":
 
     st.caption(
         f"📚 {st.session_state.material}  •  "
-        f"🎯 Level: {st.session_state.level}"
+        f"🎯 Level {st.session_state.level}"
     )
 
     st.progress(
@@ -965,22 +923,17 @@ elif st.session_state.page == "tutor":
 
     st.markdown(
         f"""
-        <div class="ai-card">
-
+        <div class="ai-box">
             <div class="ai-label">
-                SALiM AI Tutor
+                SALiM AI TUTOR
             </div>
-
             <div class="ai-title">
                 Halo, {st.session_state.name}! 👋
             </div>
-
             <div class="ai-text">
                 Saya akan membantu kamu memahami materi
-                berdasarkan hasil tes diagnostik yang telah
-                kamu kerjakan.
+                berdasarkan hasil tes diagnostikmu.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
@@ -992,35 +945,29 @@ elif st.session_state.page == "tutor":
         st.session_state.focus
     )
 
-    st.divider()
-
-    st.subheader("💬 Pertanyaan dari SALiM")
-
     st.markdown(
         """
-        <div class="card">
-
-            <div class="card-title">
-                🤖 Mari berpikir lebih dalam
+        <div class="question-box">
+            <div class="question-label">
+                PERTANYAAN PEMBELAJARAN
             </div>
-
-            <div class="card-description">
+            <div class="question-text">
                 Menurutmu, mengapa produsen sangat penting
                 bagi keberlangsungan suatu ekosistem?
                 Jelaskan dengan bahasamu sendiri.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
     )
 
     answer = st.text_area(
-        "Tulis jawabanmu:",
+        "Jawabanmu",
         placeholder=(
             "Tuliskan jawaban dengan bahasamu sendiri..."
         ),
-        height=150
+        height=150,
+        label_visibility="collapsed"
     )
 
     if st.button(
@@ -1029,7 +976,7 @@ elif st.session_state.page == "tutor":
         use_container_width=True
     ):
 
-        if answer.strip() == "":
+        if not answer.strip():
 
             st.warning(
                 "Silakan tuliskan jawaban terlebih dahulu."
@@ -1037,23 +984,22 @@ elif st.session_state.page == "tutor":
 
         else:
 
+            st.session_state.tutor_answer = answer
+
             st.success(
-                "Jawaban diterima! 🤖"
+                "Jawaban diterima!"
             )
 
             st.markdown(
                 """
-                <div class="ai-card">
-
+                <div class="ai-box">
                     <div class="ai-label">
-                        🤖 Umpan Balik SALiM
+                        🤖 UMPAN BALIK SALiM
                     </div>
-
                     <div class="ai-title">
-                        Bagus! Kamu sudah mulai
-                        memahami konsep ekosistem.
+                        Bagus! Kamu sudah mulai memahami
+                        konsep ekosistem.
                     </div>
-
                     <div class="ai-text">
                         Produsen merupakan sumber energi
                         awal dalam banyak rantai makanan.
@@ -1061,7 +1007,6 @@ elif st.session_state.page == "tutor":
                         cahaya menjadi energi kimia melalui
                         fotosintesis.
                     </div>
-
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -1088,7 +1033,7 @@ elif st.session_state.page == "tutor":
 
         st.rerun()
 
-    show_footer()
+    footer()
 
 
 # =========================================================
@@ -1097,35 +1042,30 @@ elif st.session_state.page == "tutor":
 
 elif st.session_state.page == "result":
 
-    st.progress(
-        1.0,
-        text="Tahap 4 dari 4 • Pembelajaran Selesai"
-    )
-
     st.markdown(
         """
-        <div class="hero">
-
-            <div class="hero-label">
+        <div class="hero-box">
+            <div class="hero-small">
                 LEARNING JOURNEY COMPLETED
             </div>
-
             <div class="hero-title">
                 🎉 Selesai!
             </div>
-
-            <div class="hero-subtitle">
+            <div class="hero-name">
                 Pembelajaran bersama SALiM telah selesai.
             </div>
-
             <div class="hero-description">
                 Kamu telah menyelesaikan tes diagnostik
                 dan sesi pembelajaran adaptif.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
+    )
+
+    st.progress(
+        1.0,
+        text="Tahap 4 dari 4 • Pembelajaran Selesai"
     )
 
     st.subheader(
@@ -1175,29 +1115,22 @@ elif st.session_state.page == "result":
         "melanjutkan ke materi berikutnya."
     )
 
-    st.divider()
-
     st.markdown(
         """
-        <div class="ai-card">
-
+        <div class="ai-box">
             <div class="ai-label">
                 🧬 SALiM
             </div>
-
             <div class="ai-title">
-                Setiap siswa memiliki perjalanan belajar
-                yang berbeda.
+                Setiap siswa memiliki perjalanan
+                belajar yang berbeda.
             </div>
-
             <div class="ai-text">
-                Prototype ini menunjukkan konsep dasar
-                pembelajaran adaptif: melakukan diagnosis,
-                menganalisis kemampuan, memberikan
-                pembelajaran, kemudian memberikan
-                rekomendasi.
+                Prototype ini menerapkan alur dasar
+                pembelajaran adaptif: diagnosis,
+                analisis kemampuan, pembelajaran,
+                dan rekomendasi.
             </div>
-
         </div>
         """,
         unsafe_allow_html=True
@@ -1213,7 +1146,8 @@ elif st.session_state.page == "result":
             "score",
             "answers",
             "level",
-            "focus"
+            "focus",
+            "tutor_answer"
         ]:
 
             if key in st.session_state:
@@ -1223,4 +1157,4 @@ elif st.session_state.page == "result":
 
         st.rerun()
 
-    show_footer()
+    footer()
