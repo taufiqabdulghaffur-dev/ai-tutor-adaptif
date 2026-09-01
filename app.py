@@ -5,7 +5,7 @@ import streamlit as st
 # =========================================================
 
 st.set_page_config(
-    page_title="NEXA • AI Learning",
+    page_title="SALiM • AI Learning",
     page_icon="🧬",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -278,13 +278,16 @@ if st.session_state.page == "home":
     <div class="hero">
         <div class="hero-small">Kurikulum Merdeka • IPA Kelas X</div>
         <div class="hero-title">
-            🧬 NEXA<br>
-            Adaptive Learning
+            🧬 SALiM<br>
+            Science Adaptive Learning Machine
         </div>
         <div class="hero-desc">
             Temukan cara belajar yang sesuai dengan kemampuanmu.
-            NEXA menganalisis pemahaman awal dan membantu kamu
+            SALiM menganalisis pemahaman awal dan membantu kamu
             belajar secara bertahap melalui pengalaman belajar yang personal.
+        </div>
+        <div class="hero-desc">
+            Developed by Tabdulghaffur
         </div>
     </div>
     """, unsafe_allow_html=True)
